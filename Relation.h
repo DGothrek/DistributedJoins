@@ -10,9 +10,12 @@ class Relation {
         Relation(int, int[], std::vector<int*>);
         int* getOrderedTuple(int);
         int getSize();
+        int getArity();
         int* getPermutation();
-        bool compareTo(int*, int*);
         void reorder(int[]);
+        struct sortstruct;
+        //bool compareTo(int*, int*);
+
 
     private:
         int arity;
