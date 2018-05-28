@@ -7,7 +7,7 @@
 class Relation {
     public:
         Relation(const Relation&);
-        Relation(const int, const int[], const std::vector<int*>);
+        Relation(int, int[], std::vector<int*>);
         int* getOrderedTuple(int);
         int getSize();
         int* getPermutation();
@@ -16,7 +16,7 @@ class Relation {
 
     private:
         int arity;
-        int permutation[];
+        int* permutation;
         int size;
         std::vector<int*> tuples;//will always be ordered following permutation
 };

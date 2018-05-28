@@ -9,7 +9,7 @@
 
 using namespace std;
 
-Relation::Relation(int _arity, int[] _permutation, std::vector<int*> _tuples){
+Relation::Relation(int _arity, int _permutation[], std::vector<int*> _tuples){
     arity = _arity;
     permutation = _permutation;
     tuples = _tuples;
@@ -46,7 +46,7 @@ bool Relation::compareTo(int* tuple1, int* tuple2){
     }
 }
 
-void Relation::reorder(int[] newPermutation){
+void Relation::reorder(int* newPermutation){
     permutation = newPermutation;
-    sort(tuples.begin(), tuples.end(), compareTo);
+    sort(tuples.begin(), tuples.end(), this->compareTo);
 }
