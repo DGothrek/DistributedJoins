@@ -1,3 +1,6 @@
+#ifndef RELATION_C
+#define RELATION_C
+
 #include "Relation.h"
 #include "stdio.h"
 
@@ -6,6 +9,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -14,6 +19,41 @@ Relation::Relation(int _arity, int _permutation[], std::vector<int*> _tuples){
     permutation = _permutation;
     tuples = _tuples;
     size = tuples.size();
+
+}
+
+Relation::Relation(string const& filename){
+    ifstream inputfile(filename.c_str(),ios::in);
+
+    if (inputfile){
+        int sizecount = 0;//counting size of the relation
+        string line;
+        vector<int*> tuples;
+        while(getline(inputfile, line)){
+            vector<string> idsstring;
+            istringstream iss (line);
+            sizecount ++;
+            int i = 0; //counting arity
+            string elem;
+            while(getline(iss,elem,' ')){
+                idsstring.push_back(elem);
+                i++;
+            }
+            arity = i;
+            int* ids = new int[i];
+            for(int k = 0;k<arity;k++){
+                ids[k] = atoi(idsstring[k].c_str());
+            }
+            tuples.push_back(ids);
+        }
+        size = sizecount;
+        this->tuples = tuples;
+        this->initPermutation(size);
+        this->reorder(this->permutation);
+    }
+    else{
+        throw(string("Fichier invalide."));
+    }
 
 }
 
@@ -31,6 +71,16 @@ int Relation::getArity(){
 
 int* Relation::getPermutation(){
     return permutation;
+}
+
+//Initializing the permutation at the creation of the relation.
+
+void Relation::initPermutation(int size){
+    int* permutation = new int[size];
+    for(int i=0;i<size;i++){
+        permutation[i] = i;
+    }
+    this->permutation = permutation;
 }
 
 //some trick to use a non static comparator in std::sort
@@ -62,7 +112,10 @@ struct Relation::sortstruct{
 
 
 void Relation::reorder(int* newPermutation){
-    sortstruct s(this);
+    //setting the permutation gives us a new order
     permutation = newPermutation;
+    sortstruct s(this);
     sort(tuples.begin(), tuples.end(), s);
 }
+
+#endif
