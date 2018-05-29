@@ -19,6 +19,33 @@ int main (int argc, char *argv[]) {
     // Print off a hello world message
     std::cout << "Processeur " << processor_name << " ID = " << id << " bienvenue en INF442 !" << std::endl;
 
+    //Compute an array with the right tuples for each processor
+
+        //Convert relation to array ? sort
+        //tell the set used to join
+
+    //Scatter the tuples to processors
+
+
+
+    //Receive and make the join
+
+
+
+
+
+    //Reduce to get only one joint relation
+
+
+
+
+
+
+
+
+
+
+
     // Terminate MPI.
     MPI_Finalize();
 
