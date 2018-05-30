@@ -1,7 +1,7 @@
 #include <iostream>
 #include <mpi.h>
 #include "Relation.h"
-#include "testRelation.cpp"
+#include "BasicDistributedJoin.cpp"
 
 
 int main (int argc, char *argv[]) {
