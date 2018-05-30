@@ -73,6 +73,10 @@ int* Relation::getPermutation(){
   return permutation;
 }
 
+vector<int*>Relation::getTuples(){
+  return tuples;
+}
+
 //Initializing the permutation at the creation of the relation.
 
 void Relation::initPermutation(int size){
@@ -111,6 +115,8 @@ struct Relation::sortstruct{
 
 
 
+
+
 void Relation::reorder(int* newPermutation){
   //setting the permutation gives us a new order
   permutation = newPermutation;
@@ -118,53 +124,120 @@ void Relation::reorder(int* newPermutation){
   sort(tuples.begin(), tuples.end(), s);
 }
 
-Relation jointure(Relation rela,Relation relb, vector<int> ensa, vector<int> ensb){
+
+
+Relation::Relation(Relation rela,Relation relb, vector<int> ensa, vector<int> ensb){
   //Computes the join of rela et relb. ensa contains the variable in rela
   //that pair with the variables of b contained in ensb. We must assert
   //that the two lists ensa et ensb have the same length and that they are
   //compatible with the arities of rela et relb.
   int len;
   if (ensa.size()!=ensb.size()){
-    throw(string("The columns are not compatible because of their lengths."))
+    throw(string("The columns are not compatible because of their lengths."));
   }
   len = ensa.size();
 
   //Preparing the permutations.
-  sa = rela.getArity();
-  sb = relb.getArity();
+  int sa = rela.getArity();
+  int sb = relb.getArity();
+  int ta = rela.getSize();
+  int tb = relb.getSize();
   int* pa = new int[sa];
   int* pb = new int[sb];
   int counta = 0;
-  for(int i = ensa.begin();i!=ensa.end();i++){
-    pa[counta] = i;
+  for(int i = 0;i<ensa.size();i++){
+    pa[counta] = ensa[i];
     counta++;
   }
   for(int j=0;j<sa;j++){
-    if(find(ensa.begin();ensa.end(),j)==ensa.end()){//the element does not belong to ensa
+    if(find(ensa.begin(),ensa.end(),j)==ensa.end()){//the element does not belong to ensa
       pa[counta] = j;
       counta++;
     }
   }
   int countb = 0;
-  for(int i = ensb.begin();i!=ensb.end();i++){
-    pa[countb] = i;
+  for(int i=0; i<ensb.size();i++){
+    pb[countb] = ensb[i];
     countb++;
   }
   for(int j=0;j<sa;j++){
-    if(find(ensb.begin();ensb.end(),j)==ensb.end()){//the element does not belong to ensa
-      pa[countb] = j;
+    if(find(ensb.begin(),ensb.end(),j)==ensb.end()){//the element does not belong to ensb
+      pb[countb] = j;
       countb++;
     }
   }
+
   //this way the permutation contains the elements to compare first, and in the good order.
 
-  //now working on the join.
+  //Now working on the join.
 
-  //First rearranging the comparisons of a and b, so that the comparison if good.
+  //First of all, rearranging the order within the relations.
   rela.reorder(pa);
   relb.reorder(pb);
 
+
+  //These ids enable us to browse the relations to build our joins.
+  int ida = 0;
+  int idb = 0;
+
+  /*TODO Comment
+  **
+  **
+  **
+  */
+
+  vector<int*> tuplesjoin;
+
+  while(ida<ta&&idb<tb){
+    if(smallerX(rela.getOrderedTuple(ida), rela.getOrderedTuple(idb),pa,pb,len)==-1){
+      ida++; //The element of rela is strictly less than the element of relb
+    }
+    else {
+      if(smallerX(rela.getOrderedTuple(ida),rela.getOrderedTuple(idb),pa,pb,len)==1){
+      idb++;
+    }
+    else {
+      //in this case the two coincidate on X. We thus create new elements of the join.
+      int itb = idb;//iterating on all the second relation that coincidate with rela.getOrderedTuple(ida)
+      while(itb<tb && smallerX(rela.getOrderedTuple(ida),rela.getOrderedTuple(itb),pa,pb,len)==0){
+
+        int* toAdd = new int[sa+sb-len];
+        for (int k=0;k<sa;k++){
+          toAdd[k] = rela.getOrderedTuple(ida)[k];
+        }
+        for(int j=0;j<sb;j++){
+          if(find(ensb.begin(),ensb.end(),j)==ensb.end())
+            toAdd[sa+j]=(relb.getOrderedTuple(itb)[j]);//Adding the remaining values from b;
+        }
+        tuplesjoin.push_back(toAdd);
+        itb++;
+      }
+      ida++;
+    }
+    }
+  }
+  arity = sa+sb-len;
+  size = tuplesjoin.size();
+  tuples = tuplesjoin;
+
 }
+
+int smallerX(int* ta, int* tb, int*pa, int*pb, int len){
+  //asserts wether ta is smaller than tb over the mutual variables
+  int j = 0;
+  while (j<len){
+    if(ta[pa[j]]<tb[pb[j]]){
+      return (-1);
+    }
+    if(ta[pa[j]]>tb[pb[j]]){
+      return 1;
+    }
+    j++;
+  }
+  return 0;
+  //the two are coinciding over X, thus they are compatible for the join.
+}
+
 
 
 #endif

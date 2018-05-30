@@ -8,15 +8,16 @@ using namespace std;
 
 class Relation {
     public:
-        Relation(const Relation&);
         Relation(int, int[], vector<int*>);
         Relation(const string&);
+        Relation(Relation,Relation,vector<int>,vector<int>);
         int* getOrderedTuple(int);
         int getSize();
         int getArity();
         int* getPermutation();
         void reorder(int[]);
         struct sortstruct;
+        vector<int*>getTuples();
         //bool compareTo(int*, int*);
 
 
@@ -30,6 +31,7 @@ class Relation {
 
 Relation readRelation();
 void writeRelation(Relation);
+int smallerX(int*,int*,int*,int*,int);
 
 
 
