@@ -189,18 +189,17 @@ Relation::Relation(Relation rela,Relation relb, vector<int> ensa, vector<int> en
   vector<int*> tuplesjoin;
 
   while(ida<ta&&idb<tb){
-    if(smallerX(rela.getOrderedTuple(ida), rela.getOrderedTuple(idb),pa,pb,len)==-1){
+    if(smallerX(rela.getOrderedTuple(ida), relb.getOrderedTuple(idb),ensa,ensb,len)==-1){
       ida++; //The element of rela is strictly less than the element of relb
     }
     else {
-      if(smallerX(rela.getOrderedTuple(ida),rela.getOrderedTuple(idb),pa,pb,len)==1){
+      if(smallerX(rela.getOrderedTuple(ida),relb.getOrderedTuple(idb),ensa,ensb,len)==1){
       idb++;
     }
     else {
       //in this case the two coincidate on X. We thus create new elements of the join.
       int itb = idb;//iterating on all the second relation that coincidate with rela.getOrderedTuple(ida)
-      while(itb<tb && smallerX(rela.getOrderedTuple(ida),rela.getOrderedTuple(itb),pa,pb,len)==0){
-
+      while(itb<tb && smallerX(rela.getOrderedTuple(ida),relb.getOrderedTuple(itb),ensa,ensb,len)==0){
         int* toAdd = new int[sa+sb-len];
         for (int k=0;k<sa;k++){
           toAdd[k] = rela.getOrderedTuple(ida)[k];
@@ -209,6 +208,7 @@ Relation::Relation(Relation rela,Relation relb, vector<int> ensa, vector<int> en
           if(find(ensb.begin(),ensb.end(),j)==ensb.end())
             toAdd[sa+j]=(relb.getOrderedTuple(itb)[j]);//Adding the remaining values from b;
         }
+
         tuplesjoin.push_back(toAdd);
         itb++;
       }
@@ -222,14 +222,14 @@ Relation::Relation(Relation rela,Relation relb, vector<int> ensa, vector<int> en
 
 }
 
-int smallerX(int* ta, int* tb, int*pa, int*pb, int len){
+int smallerX(int* ta, int* tb, vector<int>ensa, vector<int> ensb, int len){
   //asserts wether ta is smaller than tb over the mutual variables
   int j = 0;
   while (j<len){
-    if(ta[pa[j]]<tb[pb[j]]){
+    if(ta[ensa[j]]<tb[ensb[j]]){
       return (-1);
     }
-    if(ta[pa[j]]>tb[pb[j]]){
+    if(ta[ensa[j]]>tb[ensb[j]]){
       return 1;
     }
     j++;

@@ -31,7 +31,7 @@ class Relation {
 
 Relation readRelation();
 void writeRelation(Relation);
-int smallerX(int*,int*,int*,int*,int);
+int smallerX(int*,int*,vector<int>,vector<int>,int);
 
 
 

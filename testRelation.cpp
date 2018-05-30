@@ -6,8 +6,8 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     try{
-        Relation relat_test1 = Relation("data/test.dat");
-        Relation relat_test2 = Relation("data/test.dat");
+        Relation relat_test1 = Relation("data/facebook.dat");
+        Relation relat_test2 = Relation("data/facebook.dat");
         vector<int> ens1;
         vector<int> ens2;
         ens1.push_back(0);
